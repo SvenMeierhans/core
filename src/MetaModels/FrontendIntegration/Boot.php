@@ -20,12 +20,13 @@
 
 namespace MetaModels\FrontendIntegration;
 
+use MetaModels\ContaoIntegration\Boot as BaseBoot;
 use MetaModels\Events\MetaModelsBootEvent;
 
 /**
  * This class is used in the frontend to build the menu.
  */
-class Boot
+class Boot extends BaseBoot
 {
     /**
      * Boot the system in the frontend.
@@ -33,9 +34,17 @@ class Boot
      * @param MetaModelsBootEvent $event The event.
      *
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     public function perform(MetaModelsBootEvent $event)
     {
-        // Perform frontend boot tasks.
+        $container = $event->getServiceContainer();
+
+        $viewCombinations = new ViewCombinations($container, $GLOBALS['container']['user']);
+        $container->setService($viewCombinations, 'metamodels-view-combinations');
+
+        $this->performBoot($container, $viewCombinations);
     }
 }

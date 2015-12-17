@@ -44,8 +44,22 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 return array(
     MetaModelsEvents::SUBSYSTEM_BOOT => array(
         function (MetaModelsBootEvent $event) {
+            // This loads the factories.
             $handler = new DatabaseBackedListener();
             $handler->handleEvent($event);
+
+            /** @var EventDispatcherInterface $dispatcher */
+            $dispatcher = func_get_arg(2);
+
+            $dispatcher->addListener(
+                CreatePropertyConditionEvent::NAME,
+                array(new DefaultPropertyConditionCreator(), 'handle')
+            );
+
+            new PasteButton($event->getServiceContainer());
+            new CutButton($event->getServiceContainer());
+            new CreateVariantButton($event->getServiceContainer());
+            new DuplicateModel($event->getServiceContainer());
         }
     ),
     MetaModelsEvents::SUBSYSTEM_BOOT_FRONTEND => array(
@@ -55,19 +69,11 @@ return array(
         }
     ),
     MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND => array(
-        function (MetaModelsBootEvent $event, $eventName, EventDispatcherInterface $dispatcher) {
-            $dispatcher->addListener(
-                CreatePropertyConditionEvent::NAME,
-                array(new DefaultPropertyConditionCreator(), 'handle')
-            );
-
+        function (MetaModelsBootEvent $event) {
             $handler = new MetaModels\BackendIntegration\Boot();
             $handler->perform($event);
+
             new FilterSettingTypeRendererCore($event->getServiceContainer());
-            new PasteButton($event->getServiceContainer());
-            new CutButton($event->getServiceContainer());
-            new CreateVariantButton($event->getServiceContainer());
-            new DuplicateModel($event->getServiceContainer());
         }
     ),
     MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => array(
