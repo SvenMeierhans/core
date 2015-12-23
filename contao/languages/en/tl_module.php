@@ -23,6 +23,7 @@
  */
 $GLOBALS['TL_LANG']['tl_module']['mm_filter_legend']                = 'MetaModel Filter';
 $GLOBALS['TL_LANG']['tl_module']['mm_meta_legend']                  = 'Search engine optimization';
+$GLOBALS['TL_LANG']['tl_module']['mm_editing_legend']               = 'MetaModel frontend editing';
 
 /**
  * Fields
@@ -49,6 +50,8 @@ $GLOBALS['TL_LANG']['tl_module']['metamodel_fef_hideclearfilter']   = array('Hid
 $GLOBALS['TL_LANG']['tl_module']['metamodel_available_values']      = array('Filter counter', 'Display the amount of available entries behind each filter option.');
 $GLOBALS['TL_LANG']['tl_module']['metamodel_meta_title']            = array('Meta Title', 'Set this attribute as the meta-title of the page.');
 $GLOBALS['TL_LANG']['tl_module']['metamodel_meta_description']      = array('Meta Description', 'Set this attribute as the meta-description of the page.');
+$GLOBALS['TL_LANG']['tl_module']['metamodel_fe_editing']            = array('Enable frontend editing', 'If this is enabled, frontend user can edit items in the selected MetaModel.');
+$GLOBALS['TL_LANG']['tl_module']['metamodel_fe_editing_page']      = array('Page containing the editor', 'Select here the page where the editor instance is contained. Add and edit urls will point to this page.');
 
 
 /**

@@ -412,6 +412,9 @@ CREATE TABLE `tl_module` (
 -- meta information
   `metamodel_meta_title` varchar(64) NOT NULL default '',
   `metamodel_meta_description` varchar(64) NOT NULL default ''
+-- frontend editing
+  `metamodel_fe_editing` char(1) NOT NULL default '',
+  `metamodel_fe_editing_page` int(10) unsigned NOT NULL default '0',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -446,5 +449,8 @@ CREATE TABLE `tl_content` (
   `metamodel_available_values` char(1) NOT NULL default '',
 -- meta information
   `metamodel_meta_title` varchar(64) NOT NULL default '',
-  `metamodel_meta_description` varchar(64) NOT NULL default ''
+  `metamodel_meta_description` varchar(64) NOT NULL default '',
+-- frontend editing
+  `metamodel_fe_editing` char(1) NOT NULL default '',
+  `metamodel_fe_editing_page` int(10) unsigned NOT NULL default '0',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

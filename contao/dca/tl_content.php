@@ -29,8 +29,15 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['metamodel_content'] =
     '{mm_filter_legend},metamodel_sortby,metamodel_sortby_direction,metamodel_sort_override,metamodel_filtering,metamodel_filterparams;' .
     '{mm_rendering},metamodel_layout,metamodel_rendersettings,metamodel_noparsing;' .
     '{mm_meta_legend},metamodel_meta_title,metamodel_meta_description;' .
+    '{mm_editing_legend},metamodel_fe_editing;' .
     '{protected_legend:hide},protected;' .
     '{expert_legend:hide},metamodel_donotindex,guests,cssID,space';
+
+$GLOBALS['TL_DCA']['tl_content']['palettes']['metamodels_frontendediting'] =
+    '{type_legend},name,headline,type;' .
+    '{mm_config_legend},metamodel;' .
+    '{protected_legend:hide},protected;' .
+    '{expert_legend:hide},guests,invisible,cssID,space';
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['metamodels_frontendfilter'] =
     '{title_legend},name,headline,type;' .
@@ -47,6 +54,7 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['metamodels_frontendclearall'] =
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'metamodel_use_limit';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'metamodel_sort_override';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'metamodel_fe_editing';
 
 // Insert new Subpalettes after position 1.
 array_insert(
@@ -55,6 +63,7 @@ array_insert(
     array
     (
         'metamodel_use_limit' => 'metamodel_offset,metamodel_limit',
+        'metamodel_fe_editing' => 'metamodel_fe_editing_page'
     )
 );
 
@@ -320,6 +329,26 @@ array_insert(
                 'chosen'             => true,
                 'includeBlankOption' => true
             ),
-        )
+        ),
+        'metamodel_fe_editing'    => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['metamodel_fe_editing'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => array
+            (
+                'submitOnChange' => true,
+            ),
+        ),
+        'metamodel_fe_editing_page'  => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['metamodel_fe_editing_page'],
+            'exclude'   => true,
+            'inputType' => 'pageTree',
+            'eval'      => array
+            (
+                'fieldType' => 'radio'
+            )
+        ),
     )
 );

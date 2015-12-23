@@ -54,6 +54,7 @@ $GLOBALS['TL_LANG']['MSC']['no_theme']                                = 'global 
 $GLOBALS['TL_LANG']['MSC']['noItemsMsg']                              = 'There are no items matching your search.';
 $GLOBALS['TL_LANG']['MSC']['details']                                 = 'Details';
 $GLOBALS['TL_LANG']['MSC']['field_label']                             = '%s:';
+$GLOBALS['TL_LANG']['MSC']['metamodel_add_item']                      = 'Add item';
 
 // Stylepicker
 $GLOBALS['TL_LANG']['MSC']['tl_class']['w50']                         = array('w50', 'Set the field width to 50% and float it (float:left).');

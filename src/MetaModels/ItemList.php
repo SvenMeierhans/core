@@ -26,6 +26,10 @@
 
 namespace MetaModels;
 
+use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
+use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\GenerateFrontendUrlEvent;
+use ContaoCommunityAlliance\Contao\Bindings\Events\Controller\GetPageDetailsEvent;
+use ContaoCommunityAlliance\UrlBuilder\UrlBuilder;
 use MetaModels\Helper\PaginationLimitCalculator;
 use MetaModels\Render\Template;
 
@@ -96,6 +100,20 @@ class ItemList implements IServiceContainerAware
      * @var string
      */
     protected $strDescriptionAttribute = '';
+
+    /**
+     * Enable or disable frontend editing.
+     *
+     * @var bool
+     */
+    protected $frontendEditingEnabled = false;
+
+    /**
+     * The edit page id.
+     *
+     * @var int|null
+     */
+    protected $frontendEditingPage;
 
     /**
      * The service container.
@@ -303,12 +321,29 @@ class ItemList implements IServiceContainerAware
      *
      * @param string $strDescriptionAttribute Name of attribue for description.
      *
-     * @return void
+     * @return ItemList
      */
     public function setMetaTags($strTitleAttribute, $strDescriptionAttribute)
     {
         $this->strDescriptionAttribute = $strDescriptionAttribute;
         $this->strTitleAttribute       = $strTitleAttribute;
+
+        return $this;
+    }
+
+    /**
+     * Set the frontend editing either active or inactive
+     *
+     * @param int $pageId The page id.
+     *
+     * @return ItemList
+     */
+    public function enableFrontendEditingOn($pageId)
+    {
+        $this->frontendEditingEnabled = true;
+        $this->frontendEditingPage    = $pageId;
+
+        return $this;
     }
 
     /**
@@ -811,7 +846,53 @@ class ItemList implements IServiceContainerAware
         $this->objTemplate->caller       = $objCaller;
         $this->objTemplate->items        = $this->objItems;
         $this->objTemplate->filterParams = $this->arrParam;
+        $this->objTemplate->editEnable   = $this->frontendEditingEnabled;
+        if ($this->frontendEditingEnabled) {
+            $this->objTemplate->addUrl = $this->generateAddUrl();
+        }
 
         return $this->objTemplate->parse($strOutputFormat);
+    }
+
+    /**
+     * Generate the url to the add item page.
+     *
+     * @return string
+     */
+    public function generateAddUrl()
+    {
+        $page  = $this->getPageDetails($this->frontendEditingPage);
+        $event = new GenerateFrontendUrlEvent($page, null, $page['language']);
+
+        $this
+            ->getServiceContainer()
+            ->getEventDispatcher()
+            ->dispatch(ContaoEvents::CONTROLLER_GENERATE_FRONTEND_URL, $event);
+
+        $url = UrlBuilder::fromUrl($event->getUrl() . '?')
+            ->setQueryParameter('act', 'create');
+
+        return $url->getUrl();
+    }
+
+    /**
+     * Retrieve the details for the page with the given id.
+     *
+     * @param string $pageId The id of the page to retrieve the details for.
+     *
+     * @return array
+     */
+    private function getPageDetails($pageId)
+    {
+        if (empty($pageId)) {
+            return array();
+        }
+        $event = new GetPageDetailsEvent($pageId);
+        $this
+            ->getServiceContainer()
+            ->getEventDispatcher()
+            ->dispatch(ContaoEvents::CONTROLLER_GET_PAGE_DETAILS, $event);
+
+        return $event->getPageDetails();
     }
 }

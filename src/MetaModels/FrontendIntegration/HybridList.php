@@ -110,10 +110,16 @@ class HybridList extends MetaModelHybrid
                 deserialize($this->metamodel_filterparams, true),
                 $this->getFilterParameters($objItemRenderer)
             )
-            ->setMetaTags($this->metamodel_meta_title, $this->metamodel_meta_description);
+            ->setMetaTags($this->metamodel_meta_title, $this->metamodel_meta_description)
+            ->enableFrontendEditingOn($this->metamodel_fe_editing_page);
 
         $this->Template->items         = $objItemRenderer->render($this->metamodel_noparsing, $this);
         $this->Template->numberOfItems = $objItemRenderer->getItems()->getCount();
         $this->Template->pagination    = $objItemRenderer->getPagination();
+        $this->Template->editEnable    = (bool) $this->metamodel_fe_editing;
+        if ($this->metamodel_fe_editing) {
+            $this->Template->addUrl      = $objItemRenderer->generateAddUrl();
+            $this->Template->addNewLabel = $GLOBALS['TL_LANG']['MSC']['metamodel_add_item'];
+        }
     }
 }
