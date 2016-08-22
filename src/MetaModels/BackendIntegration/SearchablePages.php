@@ -285,7 +285,7 @@ class SearchablePages
 
         // Get the path.
         if ($path === null) {
-            $event = new GenerateFrontendUrlEvent($pageDetails, null, $pageDetails['language']);
+            $event = new GenerateFrontendUrlEvent($pageDetails, null, $pageDetails['language'], true);
             $this->getEventDispatcher()->dispatch(ContaoEvents::CONTROLLER_GENERATE_FRONTEND_URL, $event);
             $fullPath[] = $event->getUrl();
         } else {
@@ -315,7 +315,7 @@ class SearchablePages
             $pageDetails = $event->getPageDetails();
 
             // Check if we have a page If not go to the next one.
-            if($pageDetails === null) {
+            if ($pageDetails === null) {
                 continue;
             }
 

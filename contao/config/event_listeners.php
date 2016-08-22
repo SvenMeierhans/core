@@ -21,12 +21,15 @@
  * @filesource
  */
 
+use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use MetaModels\Attribute\Events\CreateAttributeFactoryEvent;
 use MetaModels\DcGeneral\Events\MetaModel\CreateVariantButton;
 use MetaModels\DcGeneral\Events\MetaModel\CutButton;
 use MetaModels\DcGeneral\Events\MetaModel\DuplicateModel;
 use MetaModels\DcGeneral\Events\MetaModel\PasteButton;
 use MetaModels\DcGeneral\Events\Table\FilterSetting\FilterSettingTypeRendererCore;
+use MetaModels\DcGeneral\Events\Table\InputScreens\InputScreenAddAllHandler;
+use MetaModels\DcGeneral\Events\Table\RenderSetting\RenderSettingAddAllHandler;
 use MetaModels\Events\CreatePropertyConditionEvent;
 use MetaModels\Events\DatabaseBackedListener;
 use MetaModels\Events\DefaultPropertyConditionCreator;
@@ -69,11 +72,21 @@ return array(
         }
     ),
     MetaModelsEvents::SUBSYSTEM_BOOT_BACKEND => array(
-        function (MetaModelsBootEvent $event) {
+        function (MetaModelsBootEvent $event, $eventName, EventDispatcherInterface $dispatcher) {
+            $dispatcher->addListener(
+                CreatePropertyConditionEvent::NAME,
+                array(new DefaultPropertyConditionCreator(), 'handle')
+            );
+
             $handler = new MetaModels\BackendIntegration\Boot();
             $handler->perform($event);
-
             new FilterSettingTypeRendererCore($event->getServiceContainer());
+            new PasteButton($event->getServiceContainer());
+            new CutButton($event->getServiceContainer());
+            new CreateVariantButton($event->getServiceContainer());
+            new DuplicateModel($event->getServiceContainer());
+            $dispatcher->addSubscriber(new RenderSettingAddAllHandler($event->getServiceContainer()));
+            $dispatcher->addSubscriber(new InputScreenAddAllHandler($event->getServiceContainer()));
         }
     ),
     MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => array(
@@ -133,4 +146,11 @@ return array(
             -10
         )
     ),
+    GetPropertyOptionsEvent::NAME => array(
+        array(
+            // Keep priority low to allow attributes like select and tags to override values.
+            'MetaModels\DcGeneral\Events\MetaModel\PropertyOptionsProvider::getPropertyOptions',
+            -200
+        )
+    )
 );
